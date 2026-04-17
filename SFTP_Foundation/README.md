@@ -1,80 +1,108 @@
-# 📁 NetSuite SFTP Foundation & Backup Suite
+# 📦 NetSuite File Sync & Backup
 
-A two-part solution for automating NetSuite File Cabinet operations and performing secure, incremental local backups.
+A powerful disaster recovery and synchronization tool that allows you to mirror your NetSuite File Cabinet to external servers or local storage. It effectively bridges the gap between NetSuite's cloud storage and your corporate backup infrastructure.
 
-[Versión en Español abajo](#versión-en-español)
-
----
-
-## 🛠️ Components
-1.  **Server-Side (RESTlet)**: `RL_FileCabinet_API.js`. An RPC-style API that exposes File Cabinet operations (Create, Get, List, Delete) via HTTPS.
-2.  **Client-Side (Python)**: `netsuite_backup_client.py`. A robust synchronization script that performs incremental backups of your entire NetSuite File Cabinet to a local directory or SFTP sink.
+[Versión en Español abajo](#versión-en-español-es)
 
 ---
 
-## 🚀 Server setup (NetSuite)
-1.  Upload `RL_FileCabinet_API.js` to your File Cabinet.
-2.  Create a **Restlet** script record and deploy it.
-3.  Ensure your role has the necessary permissions (Documents and Files).
-4.  Note down the **Script ID** and **Deployment ID**.
+## 💎 The Value of Off-Cloud Backups
+
+NetSuite holds your most critical business documents (Invoices, PDFs, Contracts). This module provides a secure, automated way to:
+- **Disaster Recovery**: Maintain a local copy of all File Cabinet assets.
+- **Speed**: Access local versions of large files without hitting NetSuite concurrency limits.
+- **Integration**: Feed NetSuite documents into local AI models, OCR systems, or third-party storage (S3, Azure, local NAS).
 
 ---
 
-## 🐍 Client Setup (Python)
+## 🧩 Components
 
-### 1. Requirements
-Ensure you have Python 3.x installed. Install dependencies using:
+1. **`RL_FileCabinet_API.js`**: A NetSuite RESTlet that exposes high-speed File Cabinet operations.
+2. **`Python_Client/`**: A production-ready Python suite for mass-downloading and synchronization.
+
+---
+
+## 🚀 NetSuite Setup (Server Side)
+
+1. Upload `RL_FileCabinet_API.js` to your File Cabinet.
+2. Create a **Restlet** script record and deploy it as **Released**.
+3. Enable **Token-Based Authentication (TBA)** on an Integration Record.
+4. Secure your credentials: **Consumer Key, Consumer Secret, Token ID, and Token Secret**.
+
+---
+
+## 🐍 Python Client Setup (Backup Logic)
+
+The Python client is designed for scheduled backup tasks.
+
+### Installation:
 ```bash
-pip install -r Python_Client/requirements.txt
+pip install requests requests-oauthlib
 ```
 
-### 2. Authentication (OAuth 1.0)
-The client uses Token-Based Authentication (TBA). You will need:
-- Consumer Key & Secret (from Integration Record)
-- Token ID & Secret (from User Token generation)
-- Account ID
+### Configuration:
+Edit the `NS_CONFIG` in `netsuite_backup_client.py`:
+- Set the `URL` to your Restlet's **External URL**.
+- Insert your Oauth 1.0 credentials.
 
-### 3. Configuration
-Edit `netsuite_backup_client.py` and update the `CONFIGURATION` section:
-- `RESTLET_URL`: Your deployed RESTlet URL.
-- `BACKUP_BASE_DIR`: Local path where files will be saved.
-- `ENABLE_MYSQL_LOGS`: Set to `True` if you wish to log every execution in a database.
-
-### ⚡ Key Features
-- **Incremental Logic**: Only downloads files that are new or modified since the last run (based on `LastModifiedDate`).
-- **Governance Management**: NetSuite has usage limits (Governance). This script automatically detects `API_GOVERNANCE_EXCEEDED` errors and pauses for 60 seconds before retrying.
-- **Large File Handling**: Automatically skips files larger than 10MB (RESTlet limit) to avoid execution errors.
-
----
-
-# Versión en Español
-
-## 📁 NetSuite SFTP Foundation & Backup Suite
-
-Sincronización y automatización del Gabinete de Archivos de NetSuite mediante una API RESTlet y un cliente de respaldo en Python.
-
-## 🚀 Configuración del Servidor
-1. suba `RL_FileCabinet_API.js` a su gabinete de archivos.
-2. Cree un registro de **Restlet** y despliéguelo.
-3. El script permite funciones como `fileCreate`, `fileGet`, `folderCreate` y `suiteQLRun`.
-
-## 🐍 Configuración del Cliente Python
-El script `netsuite_backup_client.py` permite realizar un espejo exacto de su gabinete de archivos localmente.
-
-### Características:
-- **Sincronización Incremental**: Solo descarga lo nuevo o modificado.
-- **Manejo de Gobernanza**: Detecta límites de uso de NetSuite y pausa la ejecución automáticamente por 60 segundos si es necesario.
-- **MySQL Opcional**: Incluye lógica para guardar logs de respaldo en una base de datos si se desea.
-- **Límite de Tamaño**: Omite archivos > 10MB para cumplir con las restricciones nativas de los RESTlets.
-
-### Instalación:
-```bash
-pip install -r requirements.txt
-```
-Luego configure sus credenciales OAuth 1.0 al inicio del script.
+### Backup Strategy:
+The client can be scheduled (via CRON or Task Scheduler) to run nightly, ensuring your local mirror is always up to date with the latest cloud files.
 
 ---
 
 ## 👤 Author
+**Cristóbal Montenegro**  
+GitHub: [@cristobalmontenegro](https://github.com/cristobalmontenegro)
+
+---
+
+# Versión en Español (ES)
+
+# 📦 NetSuite File Sync & Backup
+
+Una potente herramienta de sincronización y recuperación ante desastres que le permite duplicar su File Cabinet de NetSuite en servidores externos o almacenamiento local. Cierra la brecha entre el almacenamiento en la nube de NetSuite y su infraestructura de respaldo corporativa.
+
+---
+
+## 💎 El Valor de los Respaldos Fuera de la Nube
+
+NetSuite alberga sus documentos comerciales más críticos (Facturas, PDFs, Contratos). Este módulo proporciona una forma segura y automatizada de:
+- **Recuperación ante Desastres (DR)**: Mantener una copia local de todos los activos del File Cabinet.
+- **Velocidad**: Acceder a versiones locales de archivos grandes sin afectar los límites de concurrencia de NetSuite.
+- **Integración**: Alimentar documentos de NetSuite en modelos de IA locales, sistemas OCR o almacenamiento de terceros (S3, Azure, NAS local).
+
+---
+
+## 🧩 Componentes
+
+1. **`RL_FileCabinet_API.js`**: Un RESTlet de NetSuite que expone operaciones de alta velocidad para el File Cabinet.
+2. **`Python_Client/`**: Una suite de Python lista para producción para la descarga masiva y sincronización.
+
+---
+
+## 🚀 Configuración en NetSuite (Servidor)
+
+1. Suba `RL_FileCabinet_API.js` a su File Cabinet.
+2. Cree un registro de script **Restlet** y despliéguelo como **Released (Liberado)**.
+3. Habilite **Autenticación Basada en Tokens (TBA)** en un Registro de Integración.
+4. Asegure sus credenciales: **Consumer Key, Consumer Secret, Token ID y Token Secret**.
+
+---
+
+## 🐍 Configuración del Cliente Python (Lógica de Respaldo)
+
+El cliente Python está diseñado para tareas de respaldo programadas.
+
+### Instalación:
+```bash
+pip install requests requests-oauthlib
+```
+
+### Estrategia de Respaldo:
+El cliente se puede programar (vía CRON o Programador de Tareas) para ejecutarse todas las noches, asegurando que su espejo local esté siempre actualizado con los últimos archivos de la nube.
+
+---
+
+## 👤 Autor
 **Cristóbal Montenegro**  
 GitHub: [@cristobalmontenegro](https://github.com/cristobalmontenegro)

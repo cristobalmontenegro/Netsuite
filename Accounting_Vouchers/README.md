@@ -1,51 +1,83 @@
-# 🧾 NetSuite Financial Voucher Suite (Full Spectrum)
+# 🧾 NetSuite Accounting Vouchers (FinOps)
 
-A high-performance Suitelet designed to provide professional, auditor-ready PDF printouts for **every transaction that moves money** in NetSuite. Unlike native printouts, this suite always includes the real-time **GL Impact** (Accounting Entries).
+This module provides a robust, printable voucher system for financial transactions in NetSuite. It is designed to meet local accounting requirements for printed evidence of Journal Entries, Customer Payments, and Vendor Bills.
 
-[Versión en Español abajo](#versión-en-español)
-
----
-
-## 🌟 Full Financial Coverage
-The `Accounting_Voucher_SL.js` automatically detects and formats the following document types:
--   **Customer Payments**: Accounts receivable receipts.
--   **Vendor Payments**: Accounts payable disbursements.
--   **Checks**: Direct expense payments.
--   **Customer Refunds**: Returning funds to clients.
--   **Deposits**: Bank deposit records.
--   **Funds Transfers**: Bank-to-bank movements.
--   **Journal Entries**: Manual adjustments and **Amortizations**.
+[Versión en Español abajo](#versión-en-español-es)
 
 ---
 
-## 🚀 Key Features
--   **Automatic GL Impact**: Extracts real Debits and Credits directly from the transaction.
--   **Intelligent Titles**: Dynamically adjusts document titles based on record type and memo (e.g., detecting "Amortization").
--   **Application Tracking**: For payments, it lists every invoice or bill covered.
--   **Signature Ready**: Includes standard fields for "Prepared", "Reviewed", and "Approved".
+## 🚀 Deployment Instructions
+
+### 1. Script Setup
+1. Upload `Accounting_Voucher_SL.js` to the File Cabinet.
+2. Create a **Suitelet** script record.
+3. Deploy the script with **Status: Released**.
+4. Set the **Audience** to your accounting and finance roles.
+
+### 2. Implementation (Link to Record)
+To allow users to print a voucher directly from a transaction:
+1. Create a **User Event** script (or use a Workflow) to add a button to the desired transaction types (e.g., Journal, Payment).
+2. The button should open the Suitelet URL with the following query parameters:
+   - `internalid`: The ID of the current transaction.
+   - `type`: The internal ID of the record type.
 
 ---
 
-# Versión en Español
+## 🛠️ Design & Customization
 
-## 🧾 Suite de Comprobantes Financieros (Espectro Completo)
+The voucher uses a standardized financial layout featuring:
+- Company Header (Logo can be added in the XML).
+- Transaction Metadata (Date, Number, Subsidiary).
+- **Accounting Lines**: GL accounts, debits, credits, and memos.
+- **Signature Section**: Places for "Prepared by", "Approved by", and "Received by".
 
-Un Suitelet de alto rendimiento diseñado para proporcionar impresiones PDF profesionales para **cualquier transacción que mueva dinero** en NetSuite. A diferencia de las impresiones nativas, esta suite siempre incluye el **Impacto Contable (GL Impact)** real.
-
-## 🌟 Cobertura Financiera Total
-El script detecta y formatea automáticamente los siguientes documentos:
--   **Pagos de Clientes**: Recibos de caja.
--   **Pagos a Proveedores**: Egreso de proveedores.
--   **Cheques**: Pagos directos de gastos.
--   **Reembolsos**: Devolución de dinero a clientes.
--   **Depósitos**: Registros de depósito bancario.
--   **Transferencia de Fondos**: Movimientos entre bancos.
--   **Asientos Contables**: Ajustes manuales y **Amortizaciones**.
-
-Esta herramienta centraliza todo el control financiero en un solo punto de impresión profesional.
+To modify the labels or the signature section, edit the `buildXmlTemplate` function in the source code.
 
 ---
 
 ## 👤 Author
+**Cristóbal Montenegro**  
+GitHub: [@cristobalmontenegro](https://github.com/cristobalmontenegro)
+
+---
+
+# Versión en Español (ES)
+
+# 🧾 Comprobantes Contables de NetSuite (FinOps)
+
+Este módulo proporciona un sistema de comprobantes impresos robusto para transacciones financieras en NetSuite. Está diseñado para cumplir con los requisitos contables locales de evidencia impresa para Asientos de Diario, Pagos de Clientes y Facturas de Proveedores.
+
+---
+
+## 🚀 Instrucciones de Despliegue
+
+### 1. Configuración del Script
+1. Suba `Accounting_Voucher_SL.js` al File Cabinet.
+2. Cree un registro de script tipo **Suitelet**.
+3. Despliegue el script con **Estado: Lanzado (Released)**.
+4. Establezca la **Audiencia** para sus roles de contabilidad y finanzas.
+
+### 2. Implementación (Enlace al Registro)
+Para permitir que los usuarios impriman un comprobante directamente desde una transacción:
+1. Cree un script de **User Event** (o use un Workflow) para agregar un botón a los tipos de transacción deseados (ej., Diario, Pago).
+2. El botón debe abrir la URL del Suitelet con los siguientes parámetros de consulta:
+   - `internalid`: El ID de la transacción actual.
+   - `type`: El ID interno del tipo de registro.
+
+---
+
+## 🛠️ Diseño y Personalización
+
+El comprobante utiliza un diseño financiero estandarizado que incluye:
+- Encabezado de la Empresa (El logotipo se puede agregar en el XML).
+- Metadatos de la Transacción (Fecha, Número, Subsidiaria).
+- **Líneas Contables**: Cuentas del libro mayor, débitos, créditos y notas (memos).
+- **Sección de Firmas**: Espacios para "Preparado por", "Aprobado por" y "Recibido por".
+
+Para modificar las etiquetas o la sección de firmas, edite la función `buildXmlTemplate` en el código fuente.
+
+---
+
+## 👤 Autor
 **Cristóbal Montenegro**  
 GitHub: [@cristobalmontenegro](https://github.com/cristobalmontenegro)

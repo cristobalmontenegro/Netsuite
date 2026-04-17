@@ -1,55 +1,77 @@
-# 🛠️ NetSuite Power Utilities
+# 🛠️ NetSuite Inventory Utilities
 
-A collection of technical scripts to solve complex NetSuite operational issues, including inventory data integrity and external file system automation.
+A collection of technical maintenance tools designed for Warehouse Administrators and NetSuite Power Users to fix data inconsistencies and reconcile physical stock with system records.
 
-[Versión en Español abajo](#versión-en-español)
-
-## 📁 Modules Included
-
-### 1. SFTP Foundation (File Cabinet API)
-A high-performance RESTlet that serves as an RPC-style API for the NetSuite File Cabinet. 
-- **Use Case**: Integrate with local SFTP backup scripts, external document management systems, or ETL tools.
-- **Key Functions**: `fileCreate`, `fileGet`, `folderCreate`, `suiteQLRun`.
-
-### 2. Inventory Lot Corrector
-A technical Suitelet designed to fix Item Fulfillments that have "frozen" or incorrect lot assignments (e.g., negative inventory lots).
-- **Use Case**: When a script or import bypasses standard inventory validations and creates lot discrepancies.
-- **How it works**: Analyzes a specific Fulfillment ID, identifies negative lot balances, and allows the user to re-assign a positive-stock lot in real-time.
+[Versión en Español abajo](#versión-en-español-es)
 
 ---
 
-## 🚀 Installation
+## 🏗️ Featured Tool: Negative Lot Corrector
 
-### SFTP Foundation:
-1. Deploy `RL_FileCabinet_API.js` as a Restlet.
-2. Use OAuth 1.0 or OAuth 2.0 (M2M) for secure external authentication.
-3. Call the RESTlet with a JSON body specifying the `function` and parameters.
+The `Lot_Correction_SL.js` Suitelet is a specialized utility that identifies and fixes **Item Fulfillments** that were saved with inventory numbers (lots) containing negative stock.
 
-### Lot Corrector:
-1. Deploy `Lot_Correction_SL.js` as a Suitelet.
-2. Access the Suitelet URL and provide the `fulfillment_id` parameter to start the correction wizard.
+### Use Case:
+In high-volume environments, a transaction might occasionally be saved using a lot that has already been depleted, resulting in "Negative Inventory Numbers". This script allows you to re-map those lines to lots with positive availability without deleting the fulfillment.
+
+### 🚀 Deployment & Usage
+1. Upload `Lot_Correction_SL.js` to the File Cabinet.
+2. Create and deploy a **Suitelet** record.
+3. **Usage**:
+   - Open the Suitelet URL.
+   - Enter the **Internal ID** of the problematic Item Fulfillment.
+   - The script will scan the transaction and display lines with negative lots.
+   - Select a replacement lot from the dropdown (the script only shows lots with `available > 0`).
+   - Click **Submit** to update the transaction subrecord.
 
 ---
 
-# Versión en Español
-
-## 🛠️ Utilidades de Poder para NetSuite
-
-Colección de scripts técnicos para resolver problemas operativos complejos, incluyendo la integridad de datos de inventario y la automatización de archivos externos.
-
-## 📁 Módulos Incluidos
-
-### 1. SFTP Foundation (API de Gabinete de Archivos)
-Un RESTlet de alto rendimiento que sirve como API RPC para el gabinete de archivos de NetSuite.
-- **Uso**: Integración con scripts de respaldo SFTP locales, sistemas de gestión documental externos o herramientas ETL.
-
-### 2. Corrector de Lotes de Inventario
-Un Suitelet técnico diseñado para corregir Ejecuciones de Artículos (Item Fulfillments) con asignaciones de lotes erróneas o negativas.
-- **Uso**: Cuando una importación o script se salta las validaciones nativas y crea discrepancias en los lotes.
-- **Funcionamiento**: Analiza una transacción específica, detecta saldos negativos de lotes y permite al usuario reasignar lotes con stock positivo en tiempo real.
+## 🔒 Permissions Required
+- **Transactions**: Item Fulfillment (Edit).
+- **Lists**: Inventory Numbers (View).
+- **Setup**: Suitelet execution permissions for the specific administrator role.
 
 ---
 
 ## 👤 Author
+**Cristóbal Montenegro**  
+GitHub: [@cristobalmontenegro](https://github.com/cristobalmontenegro)
+
+---
+
+# Versión en Español (ES)
+
+# 🛠️ Utilidades de Inventario de NetSuite
+
+Una colección de herramientas de mantenimiento técnico diseñadas para Administradores de Almacén y Usuarios Avanzados de NetSuite para corregir inconsistencias de datos y conciliar el stock físico con los registros del sistema.
+
+---
+
+## 🏗️ Herramienta Destacada: Corrector de Lotes Negativos
+
+El Suitelet `Lot_Correction_SL.js` es una utilidad especializada que identifica y corrige **Ejecuciones de Artículos (Item Fulfillments)** que se guardaron con números de inventario (lotes) que contienen stock negativo.
+
+### Caso de Uso:
+En entornos de alto volumen, una transacción puede guardarse ocasionalmente utilizando un lote que ya se ha agotado, lo que resulta en "Números de Inventario Negativos". Este script le permite volver a mapear esas líneas a lotes con disponibilidad positiva sin eliminar el cumplimiento.
+
+### 🚀 Despliegue y Uso
+1. Suba `Lot_Correction_SL.js` al File Cabinet.
+2. Cree y despliegue un registro de **Suitelet**.
+3. **Uso**:
+   - Abra la URL del Suitelet.
+   - Ingrese el **ID Interno** del Item Fulfillment problemático.
+   - El script escaneará la transacción y mostrará las líneas con lotes negativos.
+   - Seleccione un lote de reemplazo del menú desplegable (el script solo muestra lotes con `disponible > 0`).
+   - Haga clic en **Enviar (Submit)** para actualizar el subregistro de la transacción.
+
+---
+
+## 🔒 Permisos Requeridos
+- **Transacciones**: Ejecución de Artículo (Editar).
+- **Listas**: Números de Inventario (Ver).
+- **Configuración**: Permisos de ejecución de Suitelet para el rol de administrador específico.
+
+---
+
+## 👤 Autor
 **Cristóbal Montenegro**  
 GitHub: [@cristobalmontenegro](https://github.com/cristobalmontenegro)
