@@ -20,6 +20,14 @@ This repository is organized into independent modules. You can deploy the entire
 | [**Accounting Vouchers**](./Accounting_Vouchers) | Printable financial controls & internal vouchers. | PDF Design, FinOps |
 | [**Fichas PDF**](./Fichas_PDF) | Item & Customer 360 dossiers. | Document Generation |
 | [**Inventory Utilities**](./Inventory_Utilities) | Maintenance tools for quantity/lot reconciliation. | Technical Admin |
+| [**Deployment Audit**](./Deployment_Audit) | Audit every Script Deployment: creator, audience, allroles, state. | Suitelet, SuiteQL |
+| [**Committed Stock Monitor**](./Committed_Stock_Monitor) | Find what is blocking inventory (committed quantities) in real time. | Suitelet, Search |
+| [**Text Sanitizer**](./Text_Sanitizer) | Normalize descriptions & addresses on save (SRI/e-invoicing safe). | User Event |
+| [**Reopen Transaction**](./Reopen_Transaction) | Reopen closed transactions the UI blocks. | User Event + Suitelet |
+| [**Lock Units Field**](./Lock_Units_Field) | Make the line "Units" field read-only. | Client Script |
+| [**Inbound Shipment Gate**](./Inbound_Shipment_Gate) | Require "costs complete" before receiving an Inbound Shipment. | User Event + Client |
+| [**Sales Budget Guard**](./Sales_Budget_Guard) | Block duplicate Seller + Period + Classification budgets. | User Event |
+| [**Purchase Invoice Comparator**](./Purchase_Invoice_Comparator) | Reconcile received-invoice TXT vs Vendor Bills (access key). | Suitelet |
 
 ---
 
@@ -69,6 +77,14 @@ Este repositorio está organizado en módulos independientes. Puede desplegar la
 | [**Accounting Vouchers**](./Accounting_Vouchers) | Controles financieros impresos y comprobantes internos. | Diseño PDF, FinOps |
 | [**Fichas PDF**](./Fichas_PDF) | Dossiers 360° de Artículos y Clientes. | Generación de Documentos |
 | [**Inventory Utilities**](./Inventory_Utilities) | Herramientas de mantenimiento para conciliación de cantidades/lotes. | Adm. Técnica |
+| [**Deployment Audit**](./Deployment_Audit) | Audita todos los Script Deployments: creador, audiencia, allroles, estado. | Suitelet, SuiteQL |
+| [**Committed Stock Monitor**](./Committed_Stock_Monitor) | Encuentra qué bloquea el inventario (cantidades comprometidas) en vivo. | Suitelet, Búsqueda |
+| [**Text Sanitizer**](./Text_Sanitizer) | Normaliza descripciones y direcciones al guardar (seguro para SRI). | User Event |
+| [**Reopen Transaction**](./Reopen_Transaction) | Reabre transacciones cerradas que la UI bloquea. | User Event + Suitelet |
+| [**Lock Units Field**](./Lock_Units_Field) | Vuelve de solo lectura el campo "Unidades" de la línea. | Client Script |
+| [**Inbound Shipment Gate**](./Inbound_Shipment_Gate) | Exige "costos completos" antes de recibir un Inbound Shipment. | User Event + Client |
+| [**Sales Budget Guard**](./Sales_Budget_Guard) | Bloquea presupuestos duplicados Vendedor + Período + Clasificación. | User Event |
+| [**Purchase Invoice Comparator**](./Purchase_Invoice_Comparator) | Concilia TXT de facturas recibidas vs Vendor Bills (clave de acceso). | Suitelet |
 
 ---
 
