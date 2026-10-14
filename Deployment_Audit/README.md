@@ -1,4 +1,4 @@
-# Deployment Audit for NetSuite
+# 🚀 Deployment Audit for NetSuite
 
 [Español abajo](#auditoría-de-script-deployments)
 
@@ -215,6 +215,22 @@ Todas las entradas son **parámetros de query en la URL** (no hay parámetros de
 | `tipo` | tipo de script |
 | `allroles` | `F`, `T` o vacío (la auditoría de `allroles = F`) |
 | `estado` | desplegado / no desplegado |
+
+---
+
+---
+
+## ☕ Support me / Apóyame
+
+**EN:** If any of this was useful, you can buy me a coffee. Thanks for the support!
+
+**ES:** Si te resultó útil, puedes invitarme un café. ¡Gracias por el apoyo!
+
+<p align="center">
+  <a href="https://ko-fi.com/cristobalmontenegro" target="_blank">
+    <img height="36" style="border:0px;height:36px;" src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" border="0" alt="Buy Me a Coffee at ko-fi.com" />
+  </a>
+</p>
 
 ---
 

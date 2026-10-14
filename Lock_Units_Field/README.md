@@ -1,4 +1,4 @@
-# Lock Units Field for NetSuite
+# 🚀 Lock Units Field for NetSuite
 
 [Español abajo](#bloqueo-del-campo-unidades)
 
@@ -99,6 +99,22 @@ Aplica a las sublistas `item` e `inventory` y falla en silencio (escribe en cons
 4. **Probar**: abrir una línea de transacción → el campo **Unidades** aparece gris y no se puede editar.
 
 > Para bloquear Unidades solo a ciertos roles, desplegar con audiencia restringida (no usar *All Roles*).
+
+---
+
+---
+
+## ☕ Support me / Apóyame
+
+**EN:** If any of this was useful, you can buy me a coffee. Thanks for the support!
+
+**ES:** Si te resultó útil, puedes invitarme un café. ¡Gracias por el apoyo!
+
+<p align="center">
+  <a href="https://ko-fi.com/cristobalmontenegro" target="_blank">
+    <img height="36" style="border:0px;height:36px;" src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" border="0" alt="Buy Me a Coffee at ko-fi.com" />
+  </a>
+</p>
 
 ---
 

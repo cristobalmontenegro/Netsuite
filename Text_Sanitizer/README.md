@@ -1,4 +1,4 @@
-# Text Sanitizer for NetSuite
+# 🚀 Text Sanitizer for NetSuite
 
 [Español abajo](#sanitizador-de-texto)
 
@@ -139,6 +139,22 @@ El texto libre que escriben los usuarios termina con saltos de línea, `Ñ`, til
 |---|---|---|---|
 | `SRI_LEGAL_NAME_FIELD` | `ue_sanitize_addresses.js` | `custentity_ft_lc_nomempsri_ec` | id del campo Razón Social SRI (o `null`). |
 | `ADMIN_ROLE_ID` | `ue_sanitize_addresses.js` | `3` | Rol autorizado a usar *override* de dirección. |
+
+---
+
+---
+
+## ☕ Support me / Apóyame
+
+**EN:** If any of this was useful, you can buy me a coffee. Thanks for the support!
+
+**ES:** Si te resultó útil, puedes invitarme un café. ¡Gracias por el apoyo!
+
+<p align="center">
+  <a href="https://ko-fi.com/cristobalmontenegro" target="_blank">
+    <img height="36" style="border:0px;height:36px;" src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" border="0" alt="Buy Me a Coffee at ko-fi.com" />
+  </a>
+</p>
 
 ---
 

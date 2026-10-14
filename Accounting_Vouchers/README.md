@@ -35,6 +35,22 @@ To modify the labels or the signature section, edit the `buildXmlTemplate` funct
 
 ---
 
+---
+
+## ☕ Support me / Apóyame
+
+**EN:** If any of this was useful, you can buy me a coffee. Thanks for the support!
+
+**ES:** Si te resultó útil, puedes invitarme un café. ¡Gracias por el apoyo!
+
+<p align="center">
+  <a href="https://ko-fi.com/cristobalmontenegro" target="_blank">
+    <img height="36" style="border:0px;height:36px;" src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" border="0" alt="Buy Me a Coffee at ko-fi.com" />
+  </a>
+</p>
+
+---
+
 ## 👤 Author
 **Cristóbal Montenegro**  
 GitHub: [@cristobalmontenegro](https://github.com/cristobalmontenegro)
@@ -81,3 +97,13 @@ Para modificar las etiquetas o la sección de firmas, edite la función `buildXm
 ## 👤 Autor
 **Cristóbal Montenegro**  
 GitHub: [@cristobalmontenegro](https://github.com/cristobalmontenegro)
+---
+
+# 🧾 🧾 NetSuite Accounting Vouchers (FinOps) (English)
+
+**🇬🇧 English**
+
+> The full documentation is in Spanish above. This is a brief English summary.
+
+- **Author:** Cristóbal Montenegro ([@cristobalmontenegro](https://github.com/cristobalmontenegro))
+- **License:** MIT — see [`LICENSE`](../../LICENSE).

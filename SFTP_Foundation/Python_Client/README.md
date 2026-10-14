@@ -52,3 +52,16 @@ python netsuite_backup_client.py
 </a>
 
 — **Cristóbal Montenegro** ([@cristobalmontenegro](https://github.com/cristobalmontenegro))
+
+---
+
+## 👤 Author / Autoría
+
+**Cristóbal Montenegro**  
+GitHub: [@cristobalmontenegro](https://github.com/cristobalmontenegro)
+
+---
+
+## 📜 License / Licencia
+
+MIT — see [`LICENSE`](../../../LICENSE).
