@@ -18,7 +18,8 @@ NetSuite's standard *Script Deployments* list does not show, in one place, **who
 **What it does**
 
 - Queries `scriptdeployment ⨝ script ⨝ employee` via SuiteQL to get the creator (the script *owner*) — a column that does not exist as such in the `scriptdeployment` table.
-- Filters by: creator substring, deployment id substring, script/deployment id, type, `allroles` (F/T), and deployed/not-deployed state.
+- Filters by: creator substring, deployment id substring, script/deployment id, type, **record type**, `allroles` (F/T), and deployed/not-deployed state.
+- **Record type** filter: the dropdown options are computed at runtime from `scriptdeployment.recordtype` (no hardcoding), grouped into *Built-in* vs *Custom records*, plus a `(no aplica / NULL)` option for deployments with no record type (Suitelets, Scheduled, RESTlets).
 - **Audience detail mode** (`verroles=T`): for each filtered row, loads the deployment and reports roles + run-as.
 - **JSON output** (`format=json`) for programmatic consumption.
 - Direct links to open the script record and the deployment record.
@@ -30,7 +31,7 @@ NetSuite's standard *Script Deployments* list does not show, in one place, **who
 | NetSuite | Any account with SuiteCloud. SuiteQL enabled (standard in recent versions). |
 | Feature | **Server SuiteScript** (`Setup > Company > Enable Features > SuiteCloud`). |
 | Permission | The user/deployment needs *SuiteScript* + *Custom Record* view permission; use a role with full access to Scripting. |
-| N/Modules | `N/search`, `N/ui/serverWidget`, `N/url`, `N/ui/serverWidget`, `N/runtime` (all standard). |
+| N/Modules | `N/query`, `N/search`, `N/url`, `N/record` (all standard). |
 
 No custom fields, custom records or script parameters are required.
 
@@ -46,6 +47,8 @@ scriptdeployment d
 
 - `script.owner` → `employee` is the person who created the script.
 - The *creator* filter matches `firstname + lastname`, `entityid` and `script.name`.
+
+The **record type** dropdown is rebuilt on every request with a `GROUP BY recordtype` SuiteQL query, so it always reflects the record types actually present in the account — new custom records show up without any code change.
 
 Two modes:
 
@@ -82,7 +85,7 @@ Two modes:
    /app/site/hosting/scriptlet.nl?script=customscript_deployment_audit&deploy=customdeploy_deployment_audit
    ```
 
-5. **Use the filters** in the form (creator, deployment id, script, type, allroles, state) and press **Search**. Use the **Roles** link on any row to see that deployment's audience.
+5. **Use the filters** in the form (creator, deployment id, script, title, type, file, record type, allroles, state) and press **Search**. Use the **Roles** link on any row to see that deployment's audience.
 
 ### Optional: JSON mode (for automation)
 
@@ -103,7 +106,10 @@ All inputs are **URL query parameters** (no script parameters to create):
 | `creador` | substring to match the script creator |
 | `deployid` | substring of the deployment `scriptid` (`customdeploy_...`) |
 | `script` / `deploy` | filter by script id / deployment id |
+| `titulo` | substring of the deployment title / script name |
 | `tipo` | script type |
+| `archivo` | substring of the script file name |
+| `recordtype` | record type of the deployment; `__NULL__` = only deployments without a record type (Suitelets, Scheduled, RESTlets) |
 | `allroles` | `F`, `T` or empty (the `allroles = F` audit) |
 | `estado` | deployed / not deployed |
 
@@ -127,7 +133,8 @@ La lista estándar de *Script Deployments* de NetSuite no muestra en un solo lug
 **Qué hace**
 
 - Consulta `scriptdeployment ⨝ script ⨝ employee` vía SuiteQL para obtener el creador (el *owner* del script), columna que no existe como tal en la tabla `scriptdeployment`.
-- Filtra por: subcadena del creador, subcadena del id del deployment, script/deployment id, tipo, `allroles` (F/T) y estado desplegado/no desplegado.
+- Filtra por: subcadena del creador, subcadena del id del deployment, script/deployment id, tipo, **tipo de registro**, `allroles` (F/T) y estado desplegado/no desplegado.
+- **Filtro de tipo de registro**: las opciones del dropdown se calculan en runtime desde `scriptdeployment.recordtype` (sin hardcode), agrupadas en *Built-in* vs *Custom records*, más una opción `(no aplica / NULL)` para deployments sin tipo de registro (Suitelets, Scheduled, RESTlets).
 - **Modo detalle de audiencia** (`verroles=T`): por cada fila filtrada, carga el deployment y reporta roles + run-as.
 - **Salida JSON** (`format=json`) para consumo programático.
 - Enlaces directos para abrir el registro del script y el del deployment.
@@ -139,7 +146,7 @@ La lista estándar de *Script Deployments* de NetSuite no muestra en un solo lug
 | NetSuite | Cualquier cuenta con SuiteCloud. SuiteQL habilitado (estándar en versiones recientes). |
 | Feature | **Server SuiteScript** (`Setup > Company > Enable Features > SuiteCloud`). |
 | Permiso | El usuario/deployment necesita permiso *SuiteScript* + ver *Custom Record*; usar un rol con acceso total a Scripting. |
-| Módulos | `N/search`, `N/ui/serverWidget`, `N/url`, `N/runtime` (todos estándar). |
+| Módulos | `N/query`, `N/search`, `N/url`, `N/record` (todos estándar). |
 
 No requiere campos personalizados, registros custom ni parámetros de script.
 
@@ -155,6 +162,8 @@ scriptdeployment d
 
 - `script.owner` → `employee` es quien creó el script.
 - El filtro *creador* busca en `firstname + lastname`, `entityid` y `script.name`.
+
+El dropdown de **tipo de registro** se reconstruye en cada request con una consulta SuiteQL `GROUP BY recordtype`, por lo que siempre refleja los tipos de registro presentes en la cuenta — los registros custom nuevos aparecen sin cambiar código.
 
 Dos modos:
 
@@ -191,7 +200,7 @@ Dos modos:
    /app/site/hosting/scriptlet.nl?script=customscript_deployment_audit&deploy=customdeploy_deployment_audit
    ```
 
-5. **Usar los filtros** del formulario (creador, deployment id, script, tipo, allroles, estado) y presionar **Buscar**. Usar el enlace **Roles** de cualquier fila para ver la audiencia de ese deployment.
+5. **Usar los filtros** del formulario (creador, deployment id, script, título, tipo, archivo, tipo de registro, allroles, estado) y presionar **Buscar**. Usar el enlace **Roles** de cualquier fila para ver la audiencia de ese deployment.
 
 ### Opcional: modo JSON (para automatización)
 
@@ -212,7 +221,10 @@ Todas las entradas son **parámetros de query en la URL** (no hay parámetros de
 | `creador` | subcadena para coincidir con el creador del script |
 | `deployid` | subcadena del `scriptid` del deployment (`customdeploy_...`) |
 | `script` / `deploy` | filtrar por script id / deployment id |
+| `titulo` | subcadena del título del deployment / nombre del script |
 | `tipo` | tipo de script |
+| `archivo` | subcadena del nombre de archivo del script |
+| `recordtype` | tipo de registro del deployment; `__NULL__` = solo deployments sin tipo de registro (Suitelets, Scheduled, RESTlets) |
 | `allroles` | `F`, `T` o vacío (la auditoría de `allroles = F`) |
 | `estado` | desplegado / no desplegado |
 

@@ -23,9 +23,12 @@
  *   deployid : substring en scriptid del deployment (customdeploy_xxx)
  *   scriptid : substring en scriptid del script (customscript_xxx)
  *   titulo   : substring en title del deployment o nombre del script
- *   tipo     : tipo de script (suitelet, clientscript, userevent, etc. - s.basetype)
+ *   tipo     : tipo de script (suitelet, clientscript, userevent, etc. - s.scripttype)
+ *   archivo  : substring en el nombre de archivo del script (f.name)
  *   allroles : all | T | F | null
  *   estado   : all | T | F
+ *   recordtype: tipo de registro (dropdown poblado en runtime desde scriptdeployment.recordtype).
+ *               "__NULL__" = solo deployments sin recordtype (Suitelets, Scheduled, RESTlets "en el aire").
  */
 define(['N/query', 'N/search', 'N/url', 'N/record'],
     (query, search, url, record) => {
@@ -118,7 +121,34 @@ define(['N/query', 'N/search', 'N/url', 'N/record'],
             var titulo = (params.titulo || '').trim();
             var tipo = (params.tipo || '').trim();
             var archivo = (params.archivo || '').trim();
+            var recordtype = (params.recordtype || '').trim();
             var esExterno = !!params.compid;
+
+            // Carga los valores reales de scriptdeployment.recordtype en cada request.
+            // Así, cuando se crea un nuevo custom record y se despliegan scripts sobre él,
+            // aparece automáticamente en el dropdown. Sin caché, sin hardcode.
+            // Distingue NULL (deployments "en el aire": Suitelets, Scheduled, RESTlets).
+            var recordtypeOptions = [];
+            try {
+                var rtq = query.runSuiteQL({
+                    query: "SELECT recordtype, COUNT(*) AS total FROM scriptdeployment GROUP BY recordtype ORDER BY total DESC"
+                });
+                var rtRows = rtq.asMappedResults();
+                var totalNulos = 0;
+                var conValor = [];
+                for (var rti = 0; rti < rtRows.length; rti++) {
+                    var rtKey = rtRows[rti].recordtype;
+                    var rtCnt = Number(rtRows[rti].total) || 0;
+                    if (rtKey === null || rtKey === '' || rtKey === 'null') {
+                        totalNulos = rtCnt;
+                    } else {
+                        conValor.push({ valor: String(rtKey), total: rtCnt });
+                    }
+                }
+                recordtypeOptions = { nulos: totalNulos, conValor: conValor };
+            } catch (e) {
+                recordtypeOptions = { nulos: 0, conValor: [], error: e.message };
+            }
 
             var where = [];
             if (allroles === 'T') where.push("d.allroles = 'T'");
@@ -142,8 +172,17 @@ define(['N/query', 'N/search', 'N/url', 'N/record'],
             }
             if (tipo) where.push("UPPER(COALESCE(s.scripttype, '')) = UPPER('" + esc(tipo) + "')");
             if (archivo) where.push("UPPER(COALESCE(f.name, '')) LIKE UPPER('%" + esc(archivo) + "%')");
+            // Filtro por Tipo de registro. Tres casos:
+            //  - "__NULL__"  -> solo deployments sin recordtype (Suitelets/Scheduled/RESTlets "en el aire")
+            //  - valor       -> match exacto case-insensitive (no substring, para no confundir SALESORDER con SALESORDER_xxx)
+            //  - vacío       -> no filtra
+            if (recordtype === '__NULL__') {
+                where.push("(d.recordtype IS NULL OR d.recordtype = '')");
+            } else if (recordtype) {
+                where.push("UPPER(COALESCE(d.recordtype, '')) = UPPER('" + esc(recordtype) + "')");
+            }
 
-            var sql = "SELECT d.scriptid AS deploy_scriptid, d.title, d.allroles, d.isdeployed, " +
+            var sql = "SELECT d.scriptid AS deploy_scriptid, d.title, d.allroles, d.isdeployed, d.recordtype AS rec_type, " +
                 "s.scriptid AS script_scriptid, s.name AS script_name, s.scripttype AS script_type, " +
                 "f.name AS script_file, " +
                 "e.firstname, e.lastname, e.entityid " +
@@ -185,6 +224,7 @@ define(['N/query', 'N/search', 'N/url', 'N/record'],
                         title: row.title,
                         allroles: row.allroles,
                         isdeployed: row.isdeployed,
+                        recordType: row.rec_type || null,
                         scriptId: row.script_scriptid,
                         scriptName: row.script_name,
                         scriptType: row.script_type || null,
@@ -206,6 +246,7 @@ define(['N/query', 'N/search', 'N/url', 'N/record'],
                 if (scriptsrch) p.scriptid = scriptsrch;
                 if (titulo) p.titulo = titulo;
                 if (tipo) p.tipo = tipo;
+                if (recordtype) p.recordtype = recordtype;
                 if (allroles !== 'all') p.allroles = allroles;
                 if (estado !== 'all') p.estado = estado;
                 for (var k in extra) p[k] = extra[k];
@@ -273,6 +314,7 @@ define(['N/query', 'N/search', 'N/url', 'N/record'],
                 'Set("titulo",document.getElementById("f_titulo").value);' +
                 'Set("tipo",document.getElementById("f_tipo").value);' +
                 'Set("archivo",document.getElementById("f_archivo").value);' +
+                'var rt=document.getElementById("f_recordtype").value;if(rt===""){delete pa.recordtype;}else{pa.recordtype=rt;}' +
                 'var ar=document.getElementById("f_allroles").value;if(ar==="all"){delete pa.allroles;}else{pa.allroles=ar;}' +
                 'var es=document.getElementById("f_estado").value;if(es==="all"){delete pa.estado;}else{pa.estado=es;}' +
                 'delete pa.pagina;delete pa.verroles;delete pa.format;' +
@@ -324,6 +366,43 @@ define(['N/query', 'N/search', 'N/url', 'N/record'],
                 '<label>Título: <input type="text" id="f_titulo" value="' + (titulo || '') + '" placeholder="nombre del script"></label>' +
                 '<label>Tipo: <input type="text" id="f_tipo" value="' + (tipo || '') + '" placeholder="ej: suitelet, clientscript, userevent"></label>' +
                 '<label>Archivo: <input type="text" id="f_archivo" value="' + (archivo || '') + '" placeholder="ej: my_userevent.js"></label>' +
+                '<label>Tipo de registro: <select id="f_recordtype">' +
+                '<option value=""' + (!recordtype ? ' selected' : '') + '>Todos</option>' +
+                '<option value="__NULL__"' + (recordtype === '__NULL__' ? ' selected' : '') + '>(no aplica / NULL — Suitelets, Scheduled...)</option>' +
+                (function() {
+                    // Dropdown poblado dinámicamente desde scriptdeployment.recordtype.
+                    // Cuando se crea un nuevo custom record y se despliegan scripts sobre él,
+                    // aparece automáticamente aquí en la próxima carga.
+                    var html = '';
+                    var builtIn = [];
+                    var customs = [];
+                    for (var ri = 0; ri < recordtypeOptions.conValor.length; ri++) {
+                        var opt = recordtypeOptions.conValor[ri];
+                        if (opt.valor.indexOf('customrecord_') === 0 || opt.valor.indexOf('custom_') === 0) {
+                            customs.push(opt);
+                        } else {
+                            builtIn.push(opt);
+                        }
+                    }
+                    if (builtIn.length > 0) {
+                        html += '<optgroup label="Built-in">';
+                        for (var bi = 0; bi < builtIn.length; bi++) {
+                            var bo = builtIn[bi];
+                            html += '<option value="' + bo.valor + '"' + (recordtype === bo.valor ? ' selected' : '') + '>' + bo.valor + ' (' + bo.total + ')</option>';
+                        }
+                        html += '</optgroup>';
+                    }
+                    if (customs.length > 0) {
+                        html += '<optgroup label="Custom records">';
+                        for (var ci = 0; ci < customs.length; ci++) {
+                            var co = customs[ci];
+                            html += '<option value="' + co.valor + '"' + (recordtype === co.valor ? ' selected' : '') + '>' + co.valor + ' (' + co.total + ')</option>';
+                        }
+                        html += '</optgroup>';
+                    }
+                    return html;
+                })() +
+                '</select></label>' +
                 '<label>All roles: <select id="f_allroles">' +
                 '<option value="all"' + (allroles === 'all' ? ' selected' : '') + '>Todos</option>' +
                 '<option value="F"' + (allroles === 'F' ? ' selected' : '') + '>Solo F (restringido)</option>' +
@@ -343,6 +422,7 @@ define(['N/query', 'N/search', 'N/url', 'N/record'],
                 (scriptsrch ? ' | Script: ' + scriptsrch : '') +
                 (titulo ? ' | Título: ' + titulo : '') +
                 (tipo ? ' | Tipo: ' + tipo : '') +
+                (recordtype ? ' | Tipo de registro: ' + (recordtype === '__NULL__' ? '(NULL)' : recordtype) : '') +
                 (allroles !== 'all' ? ' | allroles=' + allroles : '') +
                 (estado !== 'all' ? ' | desplegado=' + estado : '') + '</p>' +
                 '<a href="' + jsonUrl + '" target="_blank" class="btn">Obtener JSON' + (verroles ? ' (con audiencia)' : '') + '</a>' +
@@ -393,7 +473,7 @@ define(['N/query', 'N/search', 'N/url', 'N/record'],
                 } else {
                     html += '<table><thead><tr>' +
                         '<th>#</th><th>Creador</th><th>Deployment</th><th>Script</th><th>Archivo</th><th>Título</th>' +
-                        '<th>Tipo</th><th>All Roles</th><th>Activo</th>' +
+                        '<th>Tipo</th><th>Tipo de registro</th><th>All Roles</th><th>Activo</th>' +
                         (verroles ? '<th>ID</th><th>Roles Audiencia</th><th>Run As</th>' : '') +
                         '<th>Acciones</th>' +
                         '</tr></thead><tbody>';
@@ -419,6 +499,7 @@ define(['N/query', 'N/search', 'N/url', 'N/record'],
                             '<td>' + (row.script_file || '-') + '</td>' +
                             '<td>' + (row.title || (row.script_name || '')) + '</td>' +
                             '<td>' + (row.script_type || '-') + '</td>' +
+                            '<td>' + (row.rec_type || '<span class="badge bNull">(no aplica)</span>') + '</td>' +
                             '<td><span class="badge ' + badgeClass + '">' + allroleVal + '</span></td>' +
                             '<td><span class="badge ' + activoClass + '">' + activo + '</span></td>';
 
